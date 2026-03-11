@@ -43,9 +43,18 @@ jobs:
 
       - name: Deploy Qt (windeployqt)
         run: |
-          $exePath = "build\bin\ITTracker.exe"
-          $qtBin = "${{ env.Qt6_DIR }}\bin"
-          & "$qtBin\windeployqt.exe" --release --no-translations $exePath
+          $qtDir = "${{ env.Qt6_DIR }}"
+          Write-Host "Qt6_DIR = $qtDir"
+          $windeployqt = Get-ChildItem -Path "D:\a\ittraker\Qt" -Recurse -Filter "windeployqt.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $windeployqt) {
+            $windeployqt = Get-ChildItem -Path "D:\" -Recurse -Filter "windeployqt.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          }
+          if ($windeployqt) {
+            Write-Host "Found windeployqt at: $($windeployqt.FullName)"
+            & $windeployqt.FullName --release --no-translations "build\bin\ITTracker.exe"
+          } else {
+            Write-Host "windeployqt not found, skipping..."
+          }
 
       - name: Create ZIP package
         run: Compress-Archive -Path "build\bin\*" -DestinationPath "ITTracker-Windows-x64.zip"
