@@ -26,7 +26,7 @@ jobs:
           host:     'windows'
           target:   'desktop'
           arch:     'win64_msvc2019_64'
-          modules:  'qtcharts'
+          modules:  'qtcharts qtprintsupport'
           cache:    true
 
       # ── 3. Setup MSVC ────────────────────────────────────────────────────────
